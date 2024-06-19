@@ -8,9 +8,11 @@ class AddEmailToUsersTable extends Migration
 {
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('email')->unique()->after('username');
-        });
+        if (!Schema::hasColumn('users', 'email')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('email')->after('name')->unique(); // Add email after 'name' column
+            });
+        }
     }
 
     public function down()

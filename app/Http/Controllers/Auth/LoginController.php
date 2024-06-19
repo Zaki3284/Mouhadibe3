@@ -38,4 +38,15 @@ class LoginController extends Controller
             ->withInput($request->only('username', 'remember'))
             ->withErrors(['username' => $error]);
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
 }

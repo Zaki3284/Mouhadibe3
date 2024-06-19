@@ -9,10 +9,12 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id(); // Changed to 'id' instead of 'user_id' for consistency with Laravel conventions
-            $table->string('username', 100)->unique();
-            $table->string('password', 100);
-            $table->string('role')->default('user'); // Using enum for predefined roles
+            $table->id();
+            $table->string('username')->unique();
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->string('role')->default('user'); // Default role is user
+            $table->rememberToken();
             $table->timestamps();
         });
     }

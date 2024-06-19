@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Http\Request;
 use App\Models\Company;
 
@@ -39,5 +41,10 @@ class CompanyController extends Controller
         $company->save();
 
         return redirect()->back()->with('success', 'Company created successfully.');
+
+        /** @var User $user */
+        $user = Auth::user();
+        // Update the user's role to "admin"
+        $user->update(['role' => 'admin']);
     }
 }

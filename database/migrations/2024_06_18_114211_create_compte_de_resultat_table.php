@@ -14,6 +14,14 @@ class CreateCompteDeResultatTable extends Migration
             $table->decimal('montant_charge', 10, 2);
             $table->string('produit');
             $table->decimal('montant_produit', 10, 2);
+
+            // Define comptable_user_id column and its foreign key constraint
+            $table->unsignedBigInteger('comptable_user_id')->nullable();
+            $table->foreign('comptable_user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null'); // Sets the comptable_user_id to null if the corresponding user is deleted
+
             $table->timestamps();
         });
     }
