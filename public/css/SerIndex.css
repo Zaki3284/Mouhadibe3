@@ -1,0 +1,113 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align items to the top */
+  height: 100vh;
+  margin: 0;
+  background-color: teal;
+  text-align: center;
+  padding: 10px;
+  flex-direction: column; /* Stack items vertically */
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px; /* Adjust maximum width as needed */
+  margin-top: 20px; /* Margin from the top */
+}
+
+.user-types {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  padding: 10px;
+  max-width: 600px; /* Set a fixed width for user types container */
+  margin-top: 20px;
+}
+
+.user-type {
+  flex: 1;
+  margin: 10px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #FFC312;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  text-align: center;
+  max-width: 250px; /* Set a fixed width for each user type */
+}
+
+.user-type h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.user-type .icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.admin {
+  color: #c0392b;
+}
+
+.fournisseur {
+  color: #c0392b;
+}
+a {
+  text-decoration: none; /* Supprime le soulignement */
+  outline: none; /* Supprime le contour */
+}
+
+a:focus,
+a:active {
+  outline: none; /* Supprime le contour */
+  border: none; /* Supprime la bordure */
+}
+
+a:hover {
+  text-decoration: none; /* Supprime le soulignement au survol */
+  color: teal; /* Change la couleur du texte au survol */
+  
+  transform: scale(1.05); /* Augmente légèrement la taille au survol */
+  transition: transform 0.2s, background-color 0.2s; /* Ajoute une transition douce */
+}
+
+
+h1 {
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+img {
+  border-radius: 40px;
+  border-style: solid;
+  border-width: 5px;
+  border-color: #FFC312;
+  width: 100%;
+  max-width: 200px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .container {
+      flex-direction: column; /* Arrange items vertically */
+      align-items: center; /* Center items horizontally */
+  }
+
+  .user-types {
+      flex-direction: row; /* Arrange items horizontally */
+  }
+
+  .user-type {
+      width: auto;
+      max-width: 250px; /* Adjust maximum width for larger screens */
+  }
+}

@@ -1,0 +1,123 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: teal;
+  margin: 0;
+  padding: 0;
+  direction: rtl;
+}
+
+.container {
+  width: 70%;
+  margin: 50px auto;
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 5px;
+  height: 80%;
+}
+
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.step {
+  text-align: center;
+  flex: 1;
+}
+
+.step-icon {
+  width: 70px;
+  height: 70px;
+  background: #f1f1f1;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  color: #999;
+  font-size: 20px;
+}
+
+.step.active .step-icon {
+  background: #FFC312;
+  color: #fff;
+}
+
+.step p {
+  margin-top: 10px;
+  color: #999;
+}
+
+.step.active p {
+  color: #FFC312;
+}
+
+.form-step {
+  display: none;
+}
+
+.form-step-active {
+  display: block;
+}
+
+input,
+textarea,
+select {
+  display: block;
+  width: 95%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: right;
+}
+
+button {
+  background: #FFC312;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: teal;
+}
+
+textarea {
+  height: 100px;
+}
+
+img {
+  display: block;
+  margin: 5px auto;
+  width: 120px;
+  height: 120px;
+  border: 5px solid #FFC312;
+  border-radius: 20%;
+  overflow: hidden;
+}
+
+
+a {
+  text-decoration: none; /* Supprime le soulignement */
+  outline: none; /* Supprime le contour */
+}
+
+a:focus,
+a:active {
+  outline: none; /* Supprime le contour */
+  border: none; /* Supprime la bordure */
+}
+
+a:hover {
+  text-decoration: none; /* Supprime le soulignement au survol */
+  color: teal; /* Change la couleur du texte au survol */
+  
+  transform: scale(1.05); /* Augmente légèrement la taille au survol */
+  transition: transform 0.2s, background-color 0.2s; /* Ajoute une transition douce */
+}

@@ -1,0 +1,94 @@
+/* style.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital@1&display=swap');
+
+body {
+    font-family: 'Crimson Text', serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    
+}
+
+.bg-teal {
+    background-color: teal !important;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    margin-bottom: 20px;
+    height:  80px;
+    color: #f8f9fa;
+}
+
+.content {
+    margin-top: 20px;
+    text-align: right;
+    padding: 20px;
+    direction: rtl;
+    display: flex;
+}
+
+.jumbotron-sm {
+    padding-top: 24px;
+    padding-bottom: 24px;
+}
+
+.service-card {
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    background-color: teal;
+    padding: 20px;
+    color: white;
+}
+
+.service-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.service-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.service-description {
+    font-size: 16px;
+}
+
+#formFeedback {
+    color: teal;
+    font-size: 18px;
+    font-weight: bold;
+    display: none;
+}
+
+
+body.night-mode {
+    /* Add styles for night mode */
+    background-color: #333;
+    color: #fff;
+}
+
+/* style boutton */
+.btn{
+    background-color: teal;
+    color: #fff;
+}
+
+i {
+    color: #FFC312;
+  }
+  .logo img {
+    margin-top: 90px;
+    width: 150px;
+    height: 150px;
+    margin-right: 50px;
+    border: 5px solid #FFC312; /* Border color and thickness */
+    border-radius: 20%;
+    overflow: hidden; 
+}

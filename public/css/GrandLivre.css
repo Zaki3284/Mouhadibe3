@@ -1,0 +1,189 @@
+body {
+  font-family: Arial, sans-serif;
+  color: teal;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-top: 20px;
+  color: #333;
+}
+
+.form {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form input[type="text"] {
+  width: calc(100% - 22px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form button {
+  background-color: teal;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.form button:hover {
+  background-color: #FFC312;
+}
+
+#accounts-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.account-table {
+  flex: 1 1 calc(33.333% - 40px); /* 3 items per row with gap */
+  max-width: calc(33.333% - 40px);
+  background-color: #f1f1f1;
+  padding: 20px;
+  font-size: 30px; /* Adjust as needed */
+  text-align: center; /* Center align content */
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.account-table h2 {
+  margin-top: 0;
+  font-size: 1.5rem; /* Adjust font size for title */
+}
+
+.account-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.account-table th, .account-table td {
+  padding: 8px;
+  border: 1px solid #ccc;
+  text-align: left;
+  font-size: 1rem; /* Adjust font size for table cells */
+}
+
+.account-table button {
+  margin-top: 8px;
+  background-color: teal;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.8rem; /* Adjust font size for buttons */
+  border-radius: 4px;
+}
+
+.account-table button:hover {
+  background-color: #FFC312;
+}
+
+.totals {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.totals h2 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 40%;
+  height: 40%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.modal-content input {
+  margin-bottom: 15px;
+  width: 99%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#modalSaveButton {
+  background-color: teal;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+#modalSaveButton:hover {
+  background-color: #FFC312;
+}

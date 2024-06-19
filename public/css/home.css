@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital@1&display=swap');
+
+body {
+    font-family: 'Crimson Text', serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.bg-teal {
+    background-color: teal !important;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    margin-bottom: 20px;
+    height: 80px;
+    color: #f8f9fa;
+}
+
+.content {
+    margin-top: 100px;
+    text-align: right;
+    padding: 20px;
+    direction: rtl;
+    display: flex;
+}
+
+.jumbotron-sm {
+    padding-top: 24px;
+    padding-bottom: 24px;
+}
+
+.service-card {
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    background-color: teal;
+    padding: 20px;
+    color: white;
+}
+
+.service-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.service-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.service-description {
+    font-size: 16px;
+}
+
+#formFeedback {
+    color: teal;
+    font-size: 18px;
+    font-weight: bold;
+    display: none;
+}
+
+body.night-mode {
+    background-color: #333;
+    color: #fff;
+}
+
+.btn {
+    background-color: teal;
+    color: #fff;
+}
+
+i {
+    color: #FFC312;
+}
+
+.logo img {
+    margin-top: 90px;
+    width: 150px;
+    height: 150px;
+    margin-right: 50px;
+    border: 5px solid #FFC312;
+    border-radius: 20%;
+    overflow: hidden;
+}
+
+.confirmation-dialog {
+background-color: white;
+border: 2px solid teal;
+padding: 20px;
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+z-index: 2000;
+width: 300px;
+text-align: center;
+border-radius: 10px;
+box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.confirmation-dialog div {
+margin-bottom: 20px;
+font-size: 18px;
+}
+
+.confirmation-dialog .btn {
+background-color: teal;
+color: white;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+margin: 0 10px;
+font-size: 16px;
+}
+
+.confirmation-dialog .btn-confirm,
+.confirmation-dialog .btn-cancel {
+transition: background-color 0.3s ease;
+}
+
+.confirmation-dialog .btn-confirm:hover,
+.confirmation-dialog .btn-cancel:hover {
+background-color: #FFC312;
+}
