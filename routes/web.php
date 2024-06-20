@@ -94,6 +94,6 @@ Route::get('/admin/dashboard', [HomeController::class, 'adminDashboard'])->name(
 Route::get('/Comptable/dashboard', [HomeController::class, 'ComptableDashboard'])->name('Comptable.dashboard');
 Route::get('/superadmin/dashboard', [HomeController::class, 'superAdminDashboard'])->name('superadmin.dashboard');
 
-
-// Company create
-Route::post('/create_bilan', [CompanyController::class, 'createBilan'])->name('create_bilan');
+// create Company
+Route::post('/register-comptable', [CompanyController::class, 'registerComptable'])->name('register.comptable');
+Route::post('/create-company', [CompanyController::class, 'createCompany'])->name('create.company');

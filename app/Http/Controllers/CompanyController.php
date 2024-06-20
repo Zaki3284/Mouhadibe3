@@ -2,49 +2,72 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-
-use Illuminate\Http\Request;
+use App\Models\User;
 use App\Models\Company;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ComptableRegistered;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
 {
-    public function createBilan(Request $request)
+    /**
+     * Show the form for creating a company.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showCompanyCreationForm()
     {
+        return view('company.create');
+    }
+
+    /**
+     * Register a comptable and create a company.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function createCompany(Request $request)
+    {
+        // Validate the request data
         $request->validate([
+            'fullname' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
             'company_name' => 'required|string|max:255',
             'company_address' => 'required|string|max:255',
-            'company_registration' => 'required|string|max:255',
-            'total_immobilisation' => 'required|numeric',
-            'details_immobilisation' => 'nullable|string',
-            'total_actif_a_court_terme' => 'required|numeric',
-            'details_total_actif_a_court_terme' => 'nullable|string',
-            'total_du_capital' => 'required|numeric',
-            'details_du_capital' => 'nullable|string',
-            'total_du_passif_court_terme' => 'required|numeric',
-            'details_du_passif_court_terme' => 'nullable|string',
         ]);
 
+        // Create the comptable (User)
+        $comptable = User::create([
+            'fullname' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'comptable',
+        ]);
+
+        // Optionally send confirmation email
+        Mail::to($comptable->email)->send(new ComptableRegistered($comptable));
+
+        // Create the company
         $company = new Company();
         $company->company_name = $request->input('company_name');
-        $company->address = $request->input('company_address');
-        $company->registration_number = $request->input('company_registration');
-        $company->total_immobilisation = $request->input('total_immobilisation');
-        $company->details_immobilisation = $request->input('details_immobilisation');
-        $company->total_actif_a_court_terme = $request->input('total_actif_a_court_terme');
-        $company->details_total_actif_a_court_terme = $request->input('details_total_actif_a_court_terme');
-        $company->total_du_capital = $request->input('total_du_capital');
-        $company->details_du_capital = $request->input('details_du_capital');
-        $company->total_du_passif_court_terme = $request->input('total_du_passif_court_terme');
-        $company->details_du_passif_court_terme = $request->input('details_du_passif_court_terme');
-        $company->admin_user_id = auth()->user()->id; // Set the admin_user_id
+        $company->company_address = $request->input('company_address');
+        $company->admin_user_id = Auth::id(); // Assign the admin's ID as admin_user_id
+        $company->comptable_user_id = $comptable->id; // Assign the newly created comptable's ID
         $company->save();
-
-        return redirect()->back()->with('success', 'Company created successfully.');
 
         /** @var User $user */
         $user = Auth::user();
-        // Update the user's role to "admin"
+
         $user->update(['role' => 'admin']);
+
+        // Log out the user
+        Auth::logout();
+
+        // Redirect or return a response as needed
+        return redirect('/')->with('status', 'Company created successfully and you are now an admin.');
     }
 }

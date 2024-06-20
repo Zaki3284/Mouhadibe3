@@ -1,0 +1,177 @@
+      /* الأنماط العامة */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: teal;
+            padding: 20px;
+        }
+
+        .container {
+      width: 70%;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* أنماط الخطوات */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-icon {
+            width: 50px;
+            height: 50px;
+            background: #f1f1f1;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            color: #999;
+            font-size: 20px;
+        }
+
+        .step.active .step-icon {
+            background: #FFC312;
+            color: #fff;
+        }
+
+        .step p {
+            margin-top: 10px;
+            color: #999;
+        }
+
+        .step.active p {
+            color: teal;
+        }
+
+        /* أنماط النموذج */
+        .form-step {
+            display: block;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 98%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        textarea {
+            height: 120px;
+        }
+
+        button {
+            background-color: #FFC312;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: teal;
+        }
+
+        .btn-next,
+        .btn-prev {
+            background-color: teal;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-next:hover,
+        .btn-prev:hover {
+            background-color: #FFC312;
+        }
+
+        .card {
+            background-color: #fff;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px #FFC312;
+            border-radius: 4px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            color: teal;
+            margin-bottom: 10px;
+        }
+
+        .card-content {
+            color: teal;
+        }
+
+        .icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .step-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+        }
+        img {
+          display: block;
+          margin: 5px auto;
+          width: 120px;
+          height: 120px;
+          border: 5px solid #FFC312;
+          border-radius: 20%;
+          overflow: hidden;
+        }
+        
+        a {
+          text-decoration: none; /* Supprime le soulignement */
+          outline: none; /* Supprime le contour */
+        }
+        
+        a:focus,
+        a:active {
+          outline: none; /* Supprime le contour */
+          border: none; /* Supprime la bordure */
+        }
+        
+        a:hover {
+          text-decoration: none; /* Supprime le soulignement au survol */
+          color: teal; /* Change la couleur du texte au survol */
+          
+          transform: scale(1.05); /* Augmente légèrement la taille au survol */
+          transition: transform 0.2s, background-color 0.2s; /* Ajoute une transition douce */
+        }
