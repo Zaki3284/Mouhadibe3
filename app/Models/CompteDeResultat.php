@@ -11,6 +11,7 @@ class CompteDeResultat extends Model
         'montant_charge',
         'produit',
         'montant_produit',
+        'comptable_user_id',
     ];
 
     // Add any additional methods or relationships here

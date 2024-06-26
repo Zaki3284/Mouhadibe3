@@ -46,7 +46,12 @@
                 @error('fullname')
                     <div>{{ $message }}</div>
                 @enderror
-
+                <label for="phone_number">رقم الهاتف:</label>
+                <input type="text" id="phone_number" name="phone_number" value="{{ old('phone_number') }}" required>
+                @error('phone_number')
+                    <div>{{ $message }}</div>
+                @enderror
+                
                 <label for="email">البريد الإلكتروني:</label>
                 <input type="email" id="email" name="email" value="{{ old('email') }}" required>
                 @error('email')

@@ -47,4 +47,9 @@ class Company extends Model
     {
         return $this->belongsTo(User::class, 'comptable_user_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'admin_user_id');
+    }
 }

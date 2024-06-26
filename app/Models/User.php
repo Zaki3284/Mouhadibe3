@@ -17,11 +17,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
+        'username',  'email', 'password', 'phone_number', 'confirmation_token', 'role',
     ];
+
 
     /**
      * The attributes that should be hidden for arrays.
@@ -46,5 +44,15 @@ class User extends Authenticatable
     public function sendEmailVerificationNotification()
     {
         $this->notify(new CustomVerifyEmail);
+    }
+
+    public function company()
+    {
+        return $this->hasOne(Company::class, 'admin_user_id');
+    }
+
+    public function showComptableInformation($userId)
+    {
+        return $this->hasOne(Company::class, 'comptable_user_id');
     }
 }

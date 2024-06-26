@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
-    protected $fillable = ['name'];
+    use HasFactory;
+
+    protected $fillable = ['name', 'comptable_user_id'];
 
     public function operations()
     {

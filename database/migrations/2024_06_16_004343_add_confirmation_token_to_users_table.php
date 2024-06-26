@@ -9,9 +9,12 @@ class AddConfirmationTokenToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('confirmation_token', 60)->nullable()->after('password');
+            if (!Schema::hasColumn('users', 'confirmation_token')) {
+                $table->string('confirmation_token', 60)->nullable()->after('password');
+            }
         });
     }
+
 
     public function down()
     {

@@ -9,6 +9,8 @@ class ComptableController extends Controller
 {
     public function dashboard()
     {
+
+
         return view('comptable.dashboard');
     }
 }

@@ -6,8 +6,16 @@
     <title>تم تسجيل المحاسب</title>
 </head>
 <body>
-    <h1>مرحبا {{ $fullname }}،</h1>
-    <p>شكرًا لتسجيلك كمحاسب في تطبيق الحسابية.</p>
+    <!-- Add your logo here -->
+    <div style="text-align: center;">
+        <img src="{{ asset('images/logo.jpeg') }}" alt="Logo" style="width: 150px; height: auto;">
+    </div>
+
+    <h1>مرحبًا {{ $fullname }}،</h1>
+    <p>تم تسجيلك كمحاسب في تطبيق المحاسب.</p>
     <p>يرجى تسجيل الدخول للمتابعة.</p>
+    <p>يرجى تأكيد بريدك الإلكتروني من خلال النقر على الرابط التالي:</p>
+    <p><a href="{{ $confirmationUrl }}">تأكيد البريد الإلكتروني</a></p>
 </body>
 </html>
+

@@ -10,18 +10,34 @@ class ComptableRegistered extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $comptable;
+    public $fullname;
+    public $confirmationUrl;
+    public $companyName;
 
-    public function __construct($comptable)
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct($fullname, $confirmationUrl, $companyName)
     {
-        $this->comptable = $comptable;
+        $this->fullname = $fullname;
+        $this->confirmationUrl = $confirmationUrl;
+        $this->companyName = $companyName;
     }
 
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
     public function build()
     {
         return $this->view('emails.comptable_registered')
             ->with([
-                'fullname' => $this->comptable->fullname,
+                'fullname' => $this->fullname,
+                'confirmationUrl' => $this->confirmationUrl,
+                'companyName' => $this->companyName,
             ]);
     }
 }

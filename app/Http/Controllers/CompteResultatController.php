@@ -22,9 +22,17 @@ class CompteResultatController extends Controller
             'montant_produit' => 'nullable|numeric',
         ]);
 
-        CompteDeResultat::create($request->all());
+        try {
+            $comptable_user_id = auth()->id();
+            $requestData = $request->all();
+            $requestData['comptable_user_id'] = $comptable_user_id;
 
-        return redirect()->route('compte-resultat.index')->with('success', 'Compte de résultat added successfully.');
+            CompteDeResultat::create($requestData);
+
+            return response()->json(['message' => 'Le compte a été ajouté avec succès!']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Une erreur est survenue lors de l\'ajout du compte. Veuillez réessayer.'], 500);
+        }
     }
 
     public function update(Request $request, $id)
@@ -36,17 +44,22 @@ class CompteResultatController extends Controller
             'montant_produit' => 'nullable|numeric',
         ]);
 
+
         $resultat = CompteDeResultat::findOrFail($id);
         $resultat->update($request->all());
 
-        return redirect()->route('compte-resultat.index')->with('success', 'Compte de résultat updated successfully.');
+        return response()->json(['message' => 'Le compte a été mis à jour avec succès!']);
     }
 
     public function destroy($id)
     {
-        $resultat = CompteDeResultat::findOrFail($id);
-        $resultat->delete();
+        try {
+            $resultat = CompteDeResultat::findOrFail($id);
+            $resultat->delete();
 
-        return redirect()->route('compte-resultat.index')->with('success', 'Compte de résultat deleted successfully.');
+            return response()->json(['message' => 'Le compte a été supprimé avec succès!']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Une erreur est survenue lors de la suppression du compte. Veuillez réessayer.'], 500);
+        }
     }
 }

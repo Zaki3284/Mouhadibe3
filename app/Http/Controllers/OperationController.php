@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Operation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class OperationController extends Controller
 {
@@ -19,7 +20,7 @@ class OperationController extends Controller
         ]);
 
         Operation::create($request->all());
-        return redirect()->route('accounts.index');
+        return redirect()->route('accounts');
     }
 
     public function update(Request $request, Operation $operation)
@@ -37,8 +38,13 @@ class OperationController extends Controller
 
     public function destroy(Operation $operation)
     {
-        $operation->delete();
-        return redirect()->route('accounts.index');
+        try {
+            $operation->delete();
+            return redirect()->route('accounts.index')->with('success', 'Account deleted successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to delete account: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Failed to delete account. Please try again.']);
+        }
     }
 
     public function edit(Operation $operation)

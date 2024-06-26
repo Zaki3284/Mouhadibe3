@@ -19,7 +19,7 @@ class RegistrationMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Confirm Your Email Address')
-            ->view('emails.registration');
+        return $this->markdown('emails.registration')
+            ->with('details', $this->details);
     }
 }

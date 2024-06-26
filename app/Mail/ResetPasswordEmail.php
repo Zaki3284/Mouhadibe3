@@ -31,8 +31,6 @@ class ResetPasswordEmail extends Mailable
     {
         return $this->subject('Reset Password Notification')
             ->view('vendor.mail.html.reset-password')
-            ->with([
-                'url' => $this->url,
-            ]);
+            ->with(['url' => $this->url]);
     }
 }

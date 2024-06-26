@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Mail\RegistrationMail;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Mail\RegistrationMail;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -27,7 +28,8 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'username' => ['required', 'string', 'max:255', 'unique:users'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['sometimes', 'nullable', 'string', 'email', 'max:255', 'unique:users'],
+            'phone_number' => ['sometimes', 'nullable', 'string', 'max:20', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -37,6 +39,7 @@ class RegisterController extends Controller
         return User::create([
             'username' => $data['username'],
             'email' => $data['email'],
+            'phone_number' => $data['phone_number'],
             'password' => Hash::make($data['password']),
             'confirmation_token' => Str::random(60),
         ]);
@@ -48,15 +51,21 @@ class RegisterController extends Controller
 
         $user = $this->create($request->all());
 
-        // Send confirmation email
-        $details = [
-            'username' => $user->username,
-            'confirmation_url' => route('confirmation', ['token' => $user->confirmation_token]),
-        ];
+        Log::info('Confirmation URL: ' . route('confirmation', ['token' => $user->confirmation_token]));
 
-        Mail::to($user->email)->send(new RegistrationMail($details));
+        // Send confirmation email or SMS based on availability of email or phone number
+        if (!empty($user->email)) {
+            $details = [
+                'username' => $user->username,
+                'confirmation_url' => route('confirmation', ['token' => $user->confirmation_token]),
+            ];
+            Mail::to($user->email)->send(new RegistrationMail($details));
+        } elseif (!empty($user->phone_number)) {
+            // Logic to send SMS if required
+            // Example: SMS::sendConfirmation($user->phone_number, $user->confirmation_token);
+        }
 
-        return redirect()->back()->with('message', 'Confirmation email sent. Please check your inbox.');
+        return redirect()->back()->with('message', 'Confirmation email/SMS sent. Please check your inbox or SMS.');
     }
 
     public function confirmEmail($token)

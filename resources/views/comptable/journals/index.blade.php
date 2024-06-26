@@ -3,310 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Journal</title>
+    <title>Journal Table</title>
+    <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Bootstrap for modal and button styling -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Styles for custom elements -->
     <style>
         body {
             font-family: Arial, sans-serif;
-            color: teal;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 80%;
-            margin: auto;
-            margin-top: 20px;
-            background-color: #fff;
             padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-
-        h1 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-
         th, td {
             border: 1px solid black;
-            padding: 10px;
+            padding: 8px;
             text-align: left;
         }
-
         th {
             background-color: #f2f2f2;
         }
-
-        button {
-            background-color: teal;
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 14px;
-            border-radius: 5px;
+        td {
+            background-color: #ffffff;
         }
-
-        button:hover {
-            background-color: #0097a7;
-        }
-
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-
-        .modal-content {
-            background-color: #fff;
-            margin: 10% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 40%;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-        }
-
-        .modal-content form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal-content label {
-            margin-bottom: 5px;
+        tfoot {
             font-weight: bold;
         }
-
-        .modal-content input {
-            margin-bottom: 15px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        .btn-group {
+            margin-bottom: 20px;
         }
-
-        #modalSaveButton {
-            background-color: teal;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            align-self: flex-end;
-        }
-
-        #modalSaveButton:hover {
-            background-color: #FFC312;
+        .modal-dialog {
+            max-width: 800px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1><i class="fas fa-book"></i> Journal</h1>
-        <button onclick="openModal()"><i class="fas fa-plus"></i> Ajouter Ligne</button>
-        <table id="journal">
-            <thead>
-                <tr>
-                    <th>N° Compte Débit</th>
-                    <th>N° Compte Crédit</th>
-                    <th>Emplois</th>
-                    <th>Date</th>
-                    <th>Ressources</th>
-                    <th>Montant Débit</th>
-                    <th>Montant Crédit</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="journalSection">
-                <!-- Journal entries will be dynamically added here -->
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>Total Débit</td>
-                    <td id="totalDebit"></td>
-                    <td>Total Crédit</td>
-                    <td id="totalCredit"></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
+    <h2>Enregistrement des opérations réalisées par l’entreprise BETA dans un journal :</h2>
+
+    <div class="btn-group" role="group">
+        <button onclick="window.print()" class="btn btn-secondary"><i class="fas fa-print"></i> Imprimer</button>
+        <button onclick="exportTableToExcel('tableData', 'journal')" class="btn btn-success"><i class="fas fa-file-excel"></i> Excel</button>
+        <button onclick="exportTableToPDF()" class="btn btn-danger"><i class="fas fa-file-pdf"></i> PDF</button>
+        <button onclick="showAddForm()" class="btn btn-primary"><i class="fas fa-plus"></i> Ajouter</button>
     </div>
 
-    <!-- Modal -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <h2 id="modalTitle"><i class="fas fa-edit"></i> Ajouter / Modifier Ligne</h2>
-            <span class="close" onclick="closeModal()">&times;</span>
-            <form id="modalForm">
-                <input type="hidden" id="journalId">
-                <label for="compteDebit">N° Compte Débit</label>
-                <input type="text" id="compteDebit" name="compteDebit" required>
-                <label for="compteCredit">N° Compte Crédit</label>
-                <input type="text" id="compteCredit" name="compteCredit" required>
-                <label for="emplois">Emplois</label>
-                <input type="text" id="emplois" name="emplois" required>
-                <label for="date">Date</label>
-                <input type="date" id="date" name="date" required>
-                <label for="ressources">Ressources</label>
-                <input type="text" id="ressources" name="ressources" required>
-                <label for="montantDebit">Montant Débit</label>
-                <input type="number" id="montantDebit" name="montantDebit" required>
-                <label for="montantCredit">Montant Crédit</label>
-                <input type="number" id="montantCredit" name="montantCredit">
-                <button type="button" id="modalSaveButton" onclick="saveModalData()"><i class="fas fa-save"></i> Sauvegarder</button>
-            </form>
+    <!-- Success and Error Messages - Modal -->
+    <div id="successModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Opération réussie!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>L'opération a été effectuée avec succès.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <div id="errorModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Erreur lors de l'opération!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Une erreur est survenue lors du traitement de votre demande.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Form - Modal -->
+    <div id="journalFormModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="formModalTitle">Ajouter une entrée</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="journalForm">
+                        <div class="form-group">
+                            <label for="date">Date:</label>
+                            <input type="text" class="form-control" id="date" name="date" placeholder="JJ/MM">
+                        </div>
+                        <div class="form-group">
+                            <label for="debitAccount">N° Compte de Piece:</label>
+                            <input type="text" class="form-control" id="debitAccount" name="debitAccount">
+                        </div>
+                        <div class="form-group">
+                            <label for="creditAccount">N° Compte:</label>
+                            <input type="text" class="form-control" id="creditAccount" name="creditAccount">
+                        </div>
+                        <div class="form-group">
+                            <label for="emplois">Libellé:</label>
+                            <input type="text" class="form-control" id="emplois" name="emplois">
+                        </div>
+                        <div class="form-group">
+                            <label for="montantDebit">Montant Débit:</label>
+                            <input type="text" class="form-control" id="montantDebit" name="montantDebit">
+                        </div>
+                        <div class="form-group">
+                            <label for="montantCredit">Montant Crédit:</label>
+                            <input type="text" class="form-control" id="montantCredit" name="montantCredit">
+                        </div>
+                        <div class="form-group">
+                            <label for="journalCode">Code Journal:</label>
+                            <select class="form-control" id="journalCode">
+                                <option value="Achet">Achet</option>
+                                <option value="Vent">Vent</option>
+                                <option value="General">General</option>
+                                <option value="Banque">Banque</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="saveJournalEntry()">Enregistrer</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table id="tableData" class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>N° Compte Piece</th>
+                <th>N° Compte</th>
+                <th>Libellé</th>
+                <th>Montant Débit</th>
+                <th>Montant Crédit</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Sample row (you can dynamically populate rows using JavaScript) -->
+            <tr>
+                <td>08/10</td>
+                <td>210</td>
+                <td>550</td>
+                <td>Terrains</td>
+                <td>3 000 000</td>
+                <td></td>
+                <td>
+                    <button onclick="editEntry(this)" class="btn btn-info"><i class="fas fa-edit"></i> Modifier</button>
+                    <button onclick="deleteEntry(this)" class="btn btn-danger"><i class="fas fa-trash"></i> Supprimer</button>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4">TOTAUX</td>
+                <td>11 125 000</td>
+                <td>11 125 000</td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <!-- Scripts -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            fetchJournals();
-        });
+        function exportTableToExcel(tableID, filename = '') {
+            var downloadLink;
+            var dataType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
 
-        let journalData = @json($journals); // Assuming you pass $journals from your Laravel controller
+            // Specify file name
+            filename = filename ? filename + '.xls' : 'excel_data.xls';
 
-        function openModal(id = null) {
-            document.getElementById("modal").style.display = "block";
-            document.getElementById("modalForm").reset();
-            if (id) {
-                const journal = journalData.find(j => j.id === id);
-                document.getElementById("journalId").value = journal.id;
-                document.getElementById("compteDebit").value = journal.compteDebit;
-                document.getElementById("compteCredit").value = journal.compteCredit;
-                document.getElementById("emplois").value = journal.emplois;
-                document.getElementById("date").value = journal.date;
-                document.getElementById("ressources").value = journal.ressources;
-                document.getElementById("montantDebit").value = journal.montantDebit;
-                document.getElementById("montantCredit").value = journal.montantCredit;
-                document.getElementById("modalTitle").innerHTML = "<i class='fas fa-edit'></i> Modifier Ligne";
+            // Create download link element
+            downloadLink = document.createElement("a");
+
+            document.body.appendChild(downloadLink);
+
+            if (navigator.msSaveOrOpenBlob) {
+                var blob = new Blob(['\ufeff', tableHTML], {
+                    type: dataType
+                });
+                navigator.msSaveOrOpenBlob(blob, filename);
             } else {
-                document.getElementById("modalTitle").innerHTML = "<i class='fas fa-plus'></i> Ajouter Ligne";
+                // Create a link to the file
+                downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+
+                // Setting the file name
+                downloadLink.download = filename;
+
+                // Triggering the function
+                downloadLink.click();
             }
         }
 
-        function closeModal() {
-            document.getElementById("modal").style.display = "none";
-            document.getElementById("modalForm").reset();
+        function exportTableToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.autoTable({ html: '#tableData' });
+            doc.save('journal.pdf');
         }
 
-        function fetchJournals() {
-            updateJournalSection();
+        function showAddForm() {
+            document.getElementById("journalForm").reset();
+            document.getElementById("formModalTitle").innerText = "Ajouter une entrée";
+            $('#journalFormModal').modal('show');
         }
 
-        function saveModalData() {
-            const id = document.getElementById("journalId").value;
-            const formData = new FormData(document.getElementById("modalForm"));
-            const journal = {};
-            formData.forEach((value, key) => journal[key] = value);
+        function saveJournalEntry() {
+            // Example validation - you can add your own validation logic here
+            var isValid = true;
 
-            let url = '/journals';
-            let method = 'POST';
+            // Example: Check if required fields are filled
+            var date = document.getElementById("date").value.trim();
+            var debitAccount = document.getElementById("debitAccount").value.trim();
+            var creditAccount = document.getElementById("creditAccount").value.trim();
+            var emplois = document.getElementById("emplois").value.trim();
+            var montantDebit = document.getElementById("montantDebit").value.trim();
+            var montantCredit = document.getElementById("montantCredit").value.trim();
 
-            if (id) {
-                url = `/journals/${id}`;
-                method = 'PUT';
-                journal._method = 'PUT'; // Add this line to spoof the PUT method
+            if (date === '' || debitAccount === '' || creditAccount === '' || emplois === '' || montantDebit === '' || montantCredit === '') {
+                isValid = false;
             }
 
-            fetch(url, {
-                method: method,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(journal)
-            })
-            .then(response => response.json())
-            .then(data => {
-                closeModal();
-                if (!id) {
-                    journal.id = data.id; // Assuming the response returns the new journal ID
-                    journalData.push(journal);
-                } else {
-                    const index = journalData.findIndex(j => j.id === parseInt(id));
-                    journalData[index] = journal;
-                }
-                updateJournalSection();
-            })
-            .catch(error => console.error('Error:', error));
-        }
+            if (isValid) {
+                // Add your logic here to save the form data and update the table
+                // Example: create a new row in the table with entered data
+                var table = document.getElementById("tableData").getElementsByTagName('tbody')[0];
+                var newRow = table.insertRow();
 
-        function deleteRow(id) {
-            if (confirm('Are you sure you want to delete this entry?')) {
-                fetch(`/journals/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    journalData = journalData.filter(j => j.id !== id);
-                    updateJournalSection();
-                })
-                .catch(error => console.error('Error:', error));
+                var dateCell = newRow.insertCell(0);
+                var debitAccountCell = newRow.insertCell(1);
+                var creditAccountCell = newRow.insertCell(2);
+                var emploisCell = newRow.insertCell(3);
+                var montantDebitCell = newRow.insertCell(4);
+                var montantCreditCell = newRow.insertCell(5);
+                var actionsCell = newRow.insertCell(6);
+
+                dateCell.innerText = date;
+                debitAccountCell.innerText = debitAccount;
+                creditAccountCell.innerText = creditAccount;
+                emploisCell.innerText = emplois;
+                montantDebitCell.innerText = montantDebit;
+                montantCreditCell.innerText = montantCredit;
+                actionsCell.innerHTML = '<button onclick="editEntry(this)" class="btn btn-info"><i class="fas fa-edit"></i> Modifier</button> ' +
+                                        '<button onclick="deleteEntry(this)" class="btn btn-danger"><i class="fas fa-trash"></i> Supprimer</button>';
+
+                $('#journalFormModal').modal('hide'); // Hide modal after adding entry
+                $('#successModal').modal('show'); // Show success modal
+            } else {
+                $('#errorModal').modal('show'); // Show error modal if validation fails
             }
         }
 
-        function updateJournalSection() {
-            const journalSection = document.getElementById('journalSection');
-            journalSection.innerHTML = '';
-            journalData.forEach(journal => {
-                journalSection.innerHTML += `
-                    <tr>
-                        <td>${journal.compteDebit}</td>
-                        <td>${journal.compteCredit}</td>
-                        <td>${journal.emplois}</td>
-                        <td>${journal.date}</td>
-                        <td>${journal.ressources}</td>
-                        <td>${journal.montantDebit}</td>
-                        <td>${journal.montantCredit}</td>
-                        <td>
-                            <button onclick="openModal(${journal.id})"><i class="fas fa-edit"></i> Modifier</button>
-                            <button onclick="deleteRow(${journal.id})"><i class="fas fa-trash"></i> Supprimer</button>
-                        </td>
-                    </tr>
-                `;
-            });
-            document.getElementById('totalDebit').innerText = journalData.reduce((sum, journal) => sum + parseFloat(journal.montantDebit), 0);
-            document.getElementById('totalCredit').innerText = journalData.reduce((sum, journal) => sum + parseFloat(journal.montantCredit), 0);
+        function editEntry(button) {
+            var row = button.closest("tr");
+            var cells = row.getElementsByTagName("td");
+
+            // Populate form fields with row data for editing
+            document.getElementById("date").value = cells[0].innerText;
+            document.getElementById("debitAccount").value = cells[1].innerText;
+            document.getElementById("creditAccount").value = cells[2].innerText;
+            document.getElementById("emplois").value = cells[3].innerText;
+            document.getElementById("montantDebit").value = cells[4].innerText;
+            document.getElementById("montantCredit").value = cells[5].innerText;
+
+            document.getElementById("formModalTitle").innerText = "Modifier une entrée";
+            $('#journalFormModal').modal('show'); // Show modal for editing
+        }
+
+        function deleteEntry(button) {
+            var row = button.closest("tr");
+            row.remove(); // Remove row from table
         }
     </script>
+    <!-- jspdf and jspdf-autotable for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.15/jspdf.plugin.autotable.min.js"></script>
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+<script>
+    // Function to delete a table row
+    function deleteEntry(button) {
+        var row = button.closest("tr");
 
+        // Ask for confirmation before deleting
+        if (confirm("Êtes-vous sûr de vouloir supprimer cette entrée ?")) {
+            row.remove(); // Remove row from table
+
+            // Hide any success or error messages if displayed
+            $('#successModal').modal('hide');
+            $('#errorModal').modal('hide');
+        }
+    }
+
+    // Other functions remain unchanged from your previous code
+    // Make sure you have included all necessary scripts and styles in your HTML
+</script>
