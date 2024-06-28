@@ -10,6 +10,6 @@ class Journal extends Model
     use HasFactory;
 
     protected $fillable = [
-        'date', 'debit_account', 'credit_account', 'emplois', 'montant_debit', 'montant_credit', 'journal_code'
+        'Date', 'Numero_de_Compte', 'Libelle', 'Montant_Debit', 'Montant_Credit', 'Code_Journal'
     ];
 }
