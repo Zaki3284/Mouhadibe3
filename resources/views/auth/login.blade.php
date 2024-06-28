@@ -20,7 +20,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
                         </div>
-                        <input type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autofocus placeholder="اسم المستخدم">
+                        <input type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autofocus placeholder="Nom d'utilisateur">
                         @error('username')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -31,7 +31,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-key"></i></span>
                         </div>
-                        <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" required placeholder="كلمة المرور">
+                        <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" required placeholder="Mot de passe">
                         @error('password')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -41,21 +41,21 @@
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                            <label class="custom-control-label" for="remember">تذكرني</label>
+                            <label class="custom-control-label" for="remember">Souviens-toi de moi</label>
                         </div>
                     </div>
                     <div class="d-flex justify-content-center mt-3 login_container">
-                        <button type="submit" class="btn login_btn">تسجيل الدخول</button>
+                        <button type="submit" class="btn login_btn">Connexion</button>
                     </div>
                 </form>
             </div>
             <div class="mt-4">
                 <div class="d-flex justify-content-center links">
-                    ليس لديك حساب؟ <a href="{{ route('register') }}" class="ml-2">إنشاء حساب</a>
+                    Vous n'avez pas de compte? <a href="{{ route('register') }}" class="ml-2">Créer un compte</a>
                 </div>
                 @if (Route::has('password.request'))
                     <div class="d-flex justify-content-center links">
-                        <a href="{{ route('password.request') }}">نسيت كلمة المرور؟</a>
+                        <a href="{{ route('password.request') }}">Mot de passe oublié?</a>
                     </div>
                 @endif
             </div>
