@@ -15,7 +15,7 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse" id="navbarNav" style="direction: rtl">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="nav-item">
@@ -41,9 +41,9 @@
         </div>
     </nav>
 
-    <div class="container content" id="Menu">
-        <div class="text-right">
-            <h1 class="mt-5">Bienvenue</h1>
+    <div class="container content" id="Menu" >
+        <div class="text-left">
+            <h1 class="mt-5 " >Bienvenue</h1>
             <p>Nous développons une <i>application de comptabilité</i> pour gérer les activités financières des entreprises et faciliter le travail des employés de l'entreprise.</p>
             <a href="{{ route('OurService') }}" class="btn btn-lg mt-3">Commencer à utiliser l'application de comptabilité gratuitement</a>
         </div>
@@ -53,12 +53,12 @@
     </div>
 
     <!-- Nos services -->
-    <div id="Services-us-section" class="container mt-5">
+    <div id="Services-us-section" class="container mt-5" >
         <div class="jumbotron jumbotron-sm bg-teal text-white">
             <div class="container">
                 <div class="row">
-                    <div class="col-12">
-                        <h2 class="text-right">Services</h2>
+                    <div class="col-12" >
+                        <h2 class="text-left">Services</h2>
                     </div>
                 </div>
             </div>
@@ -94,7 +94,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <h2 class="text-right">Contactez-nous</h2>
+                        <h2 class="text-left">Contactez-nous</h2>
                     </div>
                 </div>
             </div>
