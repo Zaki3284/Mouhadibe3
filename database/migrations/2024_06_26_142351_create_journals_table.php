@@ -10,13 +10,13 @@ class CreateJournalsTable extends Migration
     {
         Schema::create('journals', function (Blueprint $table) {
             $table->id();
-            $table->string('date');
-            $table->string('debit_account');
-            $table->string('credit_account');
-            $table->string('emplois');
-            $table->decimal('montant_debit', 10, 2);
-            $table->decimal('montant_credit', 10, 2);
-            $table->string('journal_code');
+            $table->date('Date');
+            $table->string('Numero_de_Compte');
+            $table->foreign('Numero_de_Compte')->references('Numero_de_Compte')->on('comptes');
+            $table->string('Libelle');
+            $table->decimal('Montant_Debit', 15, 2)->nullable();
+            $table->decimal('Montant_Credit', 15, 2)->nullable();
+            $table->string('Code_Journal');
             $table->timestamps();
         });
     }

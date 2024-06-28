@@ -124,7 +124,7 @@
         <div class="grid">
             <div class="card">
                 <div class="card-icon"><i class="fas fa-book"></i></div>
-                <div><a href="{{ route('journal') }}">Journal</a></div>
+                <div><a href="{{ route('journals.index') }}">Journal</a></div>
             </div>
             <div class="card">
                 <div class="card-icon"><i class="fas fa-book-open"></i></div>

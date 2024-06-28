@@ -16,5 +16,8 @@ class Compte extends Model
         'numero_compte',
     ];
 
-    // Define any relationships if applicable
+    public function entries()
+    {
+        return $this->hasMany(Entry::class, 'compte_id');
+    }
 }

@@ -9,7 +9,7 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-       table {
+        table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
@@ -59,18 +59,17 @@
             </thead>
             <tbody id="comptesList">
                 @foreach ($comptes as $compte)
-            <tr>
-                <td>{{ $compte->nom }}</td>
-                <td>{{ $compte->type }}</td>
-                <td>{{ $compte->classe }}</td>
-                <td>{{ $compte->numero_compte }}</td>
-                <td>
-                    <!-- Include your actions here (edit, delete buttons) -->
-                    <button><i class="fas fa-edit"></i>Edit</button>
-                    <button><i class="fas fa-trash"></i>Delete</button>
-                </td>
-            </tr>
-            @endforeach
+                    <tr data-id="{{ $compte->id }}">
+                        <td>{{ $compte->nom }}</td>
+                        <td>{{ $compte->type }}</td>
+                        <td>{{ $compte->classe }}</td>
+                        <td>{{ $compte->numero_compte }}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm editCompte" data-id="{{ $compte->id }}" data-toggle="modal" data-target="#editCompteModal">Modifier</button>
+                            <button class="btn btn-danger btn-sm deleteCompte" data-id="{{ $compte->id }}">Supprimer</button>
+                        </td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
@@ -180,122 +179,199 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+                        <button type="submit" class="btn btn-primary">Modifier Compte</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Include jQuery and Axios (for Ajax requests) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel"><i class="fas fa-check-circle text-success"></i> Succès</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="successModalBody">
+                    <!-- Success message will appear here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel"><i class="fas fa-times-circle text-danger"></i> Erreur</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="errorModalBody">
+                    <!-- Error message will appear here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel"><i class="fas fa-exclamation-triangle text-warning"></i> Confirmation de suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir supprimer ce compte ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">Supprimer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Axios for making AJAX requests -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
         $(document).ready(function() {
-            // Handle form submission for creating a new Compte
+            // Function to handle form submission for creating a compte
             $('#compteForm').submit(function(event) {
                 event.preventDefault();
                 let formData = $(this).serialize();
 
-                axios.post('{{ route('comptes.store') }}', formData)
+                axios.post('/comptes', formData)
                     .then(response => {
-                        let compte = response.data.compte;
-                        // Append new row to table
-                        let newRow = `<tr data-id="${compte.id}">
-                                        <td>${compte.nom}</td>
-                                        <td>${compte.type}</td>
-                                        <td>${compte.classe}</td>
-                                        <td>${compte.numero_compte}</td>
-                                        <td>
-                                            <button class="btn btn-warning btn-sm editCompte" data-id="${compte.id}" data-toggle="modal" data-target="#editCompteModal">Modifier</button>
-                                            <button class="btn btn-danger btn-sm deleteCompte" data-id="${compte.id}">Supprimer</button>
-                                        </td>
-                                    </tr>`;
-                        $('#comptesList').append(newRow);
-
-                        // Clear form fields and close modal
-                        $('#compteForm').trigger('reset');
                         $('#createCompteModal').modal('hide');
+                        $('#compteForm')[0].reset(); // Clear form inputs
+                        // Append new row to the table
+                        $('#comptesList').append(`
+                            <tr data-id="${response.data.id}">
+                                <td>${response.data.nom}</td>
+                                <td>${response.data.type}</td>
+                                <td>${response.data.classe}</td>
+                                <td>${response.data.numero_compte}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm editCompte" data-id="${response.data.id}" data-toggle="modal" data-target="#editCompteModal">Modifier</button>
+                                    <button class="btn btn-danger btn-sm deleteCompte" data-id="${response.data.id}">Supprimer</button>
+                                </td>
+                            </tr>
+                        `);
+
+                        // Show success message
+                        $('#successModalBody').html(`<p>Compte ajouté avec succès.</p>`);
+                        $('#successModal').modal('show');
                     })
                     .catch(error => {
-                        alert('Une erreur s\'est produite. Veuillez réessayer.');
+                        // Show error message
+                        $('#errorModalBody').html(`<p>Une erreur s'est produite lors de l'ajout du compte. Veuillez réessayer.</p>`);
+                        $('#errorModal').modal('show');
                     });
             });
 
-            // Handle form submission for editing a Compte
-            $('#editCompteForm').submit(function(event) {
-                event.preventDefault();
-                let formData = $(this).serialize();
-                let compteId = $('#editCompteId').val();
-
-                axios.put(`/comptes/${compteId}`, formData)
-                    .then(response => {
-                        let updatedCompte = response.data.compte;
-                        // Update existing row in the table
-                        let editedRow = `<tr data-id="${updatedCompte.id}">
-                                            <td>${updatedCompte.nom}</td>
-                                            <td>${updatedCompte.type}</td>
-                                            <td>${updatedCompte.classe}</td>
-                                            <td>${updatedCompte.numero_compte}</td>
-                                            <td>
-                                                <button class="btn btn-warning btn-sm editCompte" data-id="${updatedCompte.id}" data-toggle="modal" data-target="#editCompteModal">Modifier</button>
-                                                <button class="btn btn-danger btn-sm deleteCompte" data-id="${updatedCompte.id}">Supprimer</button>
-                                            </td>
-                                        </tr>`;
-                        $(`#comptesList tr[data-id="${updatedCompte.id}"]`).replaceWith(editedRow);
-
-                        // Close the modal
-                        $('#editCompteModal').modal('hide');
-
-                        alert('Compte mis à jour avec succès.');
-                    })
-                    .catch(error => {
-                        alert('Une erreur s\'est produite lors de la mise à jour du compte. Veuillez réessayer.');
-                    });
-            });
-
-            // Populate edit modal fields when clicking edit button
+            // Function to handle click event on edit button
             $('#comptesList').on('click', '.editCompte', function() {
                 let compteId = $(this).data('id');
 
-                axios.get(`/comptes/${compteId}/edit`)
+                // Fetch compte details and fill in the edit modal form
+                axios.get(`/comptes/${compteId}`)
                     .then(response => {
-                        let compte = response.data.compte;
-
-                        // Populate form fields with the fetched data
-                        $('#editCompteId').val(compte.id);
-                        $('#editNom').val(compte.nom);
-                        $('#editType').val(compte.type);
-                        $('#editClasse').val(compte.classe);
-                        $('#editNumeroCompte').val(compte.numero_compte);
-
-                        // Show the edit modal
-                        $('#editCompteModal').modal('show');
+                        $('#editCompteId').val(response.data.id);
+                        $('#editNom').val(response.data.nom);
+                        $('#editType').val(response.data.type);
+                        $('#editClasse').val(response.data.classe);
+                        $('#editNumeroCompte').val(response.data.numero_compte);
                     })
                     .catch(error => {
-                        alert('Une erreur s\'est produite lors du chargement des données pour la modification. Veuillez réessayer.');
+                        console.error(error);
                     });
             });
 
-            // Example of handling delete button (Ajax request)
+            // Function to handle form submission for editing a compte
+            $('#editCompteForm').submit(function(event) {
+                event.preventDefault();
+                let compteId = $('#editCompteId').val();
+                let formData = $(this).serialize();
+
+                axios.put(`/comptes/${compteId}`, formData)
+                    .then(response => {
+                        $('#editCompteModal').modal('hide');
+
+                        // Update the corresponding row in the table
+                        let editedRow = `
+                            <td>${response.data.nom}</td>
+                            <td>${response.data.type}</td>
+                            <td>${response.data.classe}</td>
+                            <td>${response.data.numero_compte}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm editCompte" data-id="${response.data.id}" data-toggle="modal" data-target="#editCompteModal">Modifier</button>
+                                <button class="btn btn-danger btn-sm deleteCompte" data-id="${response.data.id}">Supprimer</button>
+                            </td>
+                        `;
+                        $(`#comptesList tr[data-id="${response.data.id}"]`).html(editedRow);
+
+                        // Show success message
+                        $('#successModalBody').html(`<p>Compte modifié avec succès.</p>`);
+                        $('#successModal').modal('show');
+                    })
+                    .catch(error => {
+                        // Show error message
+                        $('#errorModalBody').html(`<p>Une erreur s'est produite lors de la modification du compte. Veuillez réessayer.</p>`);
+                        $('#errorModal').modal('show');
+                    });
+            });
+
+            // Function to handle click event on delete button
             $('#comptesList').on('click', '.deleteCompte', function() {
                 let compteId = $(this).data('id');
 
-                axios.delete(`/comptes/${compteId}`)
-                    .then(response => {
-                        // Remove the deleted row from the table
-                        $(`#comptesList tr[data-id="${compteId}"]`).remove();
-                        alert('Compte supprimé avec succès.');
-                    })
-                    .catch(error => {
-                        alert('Une erreur s\'est produite lors de la suppression du compte. Veuillez réessayer.');
-                    });
+                // Show confirmation modal
+                $('#confirmDeleteModal').modal('show');
+
+                // Handle delete action upon confirmation
+                $('#confirmDeleteBtn').on('click', function() {
+                    axios.delete(`/comptes/${compteId}`)
+                        .then(response => {
+                            // Remove the deleted row from the table
+                            $(`#comptesList tr[data-id="${compteId}"]`).remove();
+                            $('#confirmDeleteModal').modal('hide');
+
+                            // Show success message
+                            $('#successModalBody').html(`<p>Compte supprimé avec succès.</p>`);
+                            $('#successModal').modal('show');
+                        })
+                        .catch(error => {
+                            $('#confirmDeleteModal').modal('hide');
+
+                            // Show error message
+                            $('#errorModalBody').html(`<p>Une erreur s'est produite lors de la suppression du compte. Veuillez réessayer.</p>`);
+                            $('#errorModal').modal('show');
+                        });
+                });
             });
         });
     </script>
-
-    <!-- Bootstrap JS -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
