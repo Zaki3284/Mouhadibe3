@@ -2,46 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Balance;
 use Illuminate\Http\Request;
+use App\Models\Balance;
+use Carbon\Carbon;
 
 class BalanceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $balances = Balance::all();
-        return view('comptable.balance.index', compact('balances'));
-    }
+        $month = $request->input('month', Carbon::now()->format('Y-m'));
+        try {
+            $date = Carbon::createFromFormat('Y-m', $month);
+        } catch (\Exception $e) {
+            return redirect()->route('balances.index')->withErrors('Invalid month format. Please use YYYY-MM.');
+        }
 
-    public function create()
-    {
-        return view('comptable.balance.create');
-    }
+        $balances = Balance::whereYear('date', $date->year)
+            ->whereMonth('date', $date->month)
+            ->get()
+            ->groupBy('code_journal');
 
-    public function store(Request $request)
-    {
-        // Validate and store new Balance entry
-    }
-
-    public function show($id)
-    {
-        $balance = Balance::findOrFail($id);
-        return view('comptable.balance.show', compact('balance'));
-    }
-
-    public function edit($id)
-    {
-        $balance = Balance::findOrFail($id);
-        return view('comptable.balance.edit', compact('balance'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        // Validate and update Balance entry
-    }
-
-    public function destroy($id)
-    {
-        // Delete Balance entry
+        return view('comptable.balance.index', compact('balances', 'month'));
     }
 }

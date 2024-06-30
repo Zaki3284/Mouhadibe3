@@ -9,18 +9,19 @@ class Balance extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'balance_id';
-
     protected $fillable = [
-        'comptable_user_id',
-        'account_name',
-        'balance_amount',
+        'account',
+        'description',
+        'movement_debit',
+        'movement_credit',
+        'balance_debit',
+        'balance_credit',
+        'code_journal',
+        'date'
     ];
 
-    public function comptable()
+    public function compte()
     {
-        return $this->belongsTo(User::class, 'comptable_user_id');
+        return $this->belongsTo(Compte::class, 'account', 'numero_compte');
     }
-
-    // Define other relationships and methods as needed
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\CompteController;
 use App\Http\Controllers\ServiceController;
 
@@ -90,7 +91,7 @@ Route::delete('/compte-resultat/{id}', [CompteResultatController::class, 'destro
 
 
 // Balance
-Route::resource('balance', 'BalanceController');
+Route::get('/balances', [BalanceController::class, 'index'])->name('balances.index');
 
 // Grand Livre
 Route::resource('entries', EntryController::class);

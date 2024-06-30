@@ -10,14 +10,11 @@ class Compte extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nom',
-        'type',
-        'classe',
-        'numero_compte',
+        'nom', 'type', 'classe', 'numero_compte',
     ];
 
     public function entries()
     {
-        return $this->hasMany(Entry::class, 'compte_id');
+        return $this->hasMany(Entry::class, 'account', 'numero_compte');
     }
 }
