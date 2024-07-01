@@ -101,7 +101,8 @@
     body {
         font-family: Arial, sans-serif;
         margin: 20px;
-        color: teal
+        background-color: teal;
+        color: white;
     }
 
     table {
@@ -117,16 +118,16 @@
     }
 
     th {
-        background-color: #f2f2f2;
+        /* background-color: #f2f2f2; */
         font-weight: bold;
     }
 
     tr:nth-child(even) {
-        background-color: #f9f9f9;
+        /* background-color: #f9f9f9; */
     }
 
     td[colspan="4"], td[colspan="6"] {
-        background-color: #f2f2f2;
+        /* background-color: #f2f2f2; */
         font-weight: bold;
     }
 
