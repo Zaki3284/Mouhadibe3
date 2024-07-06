@@ -94,6 +94,7 @@
             </tr>
         </tbody>
     </table>
+    <a href="{{ route('comptable.dashboard') }}" class="back-button"><i class="fas fa-home"></i> Retour à la page comptable dashboard</a>
 </body>
 </html>
 
@@ -183,6 +184,18 @@ input[type="month"]:focus {
     box-shadow: 0 0 5px rgba(102, 175, 233, 0.5); /* Box shadow on focus */
 }
 
+.back-button {
+            display: inline-block;
+            margin-top: 20px;
+            color:#FFC312;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .back-button:hover {
+            text-decoration: underline;
+            color: teal;
+        }
 
 </style>
 

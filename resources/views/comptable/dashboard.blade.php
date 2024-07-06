@@ -6,9 +6,10 @@
     <title>Dashboard Comptable</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Global styles */
         body {
-            background-color: teal;
-            color: #333;
+            background-color: #f0f0f0;
+            color: white;
             font-family: 'Arial', sans-serif;
             margin: 0;
             display: flex;
@@ -25,14 +26,19 @@
             color: white;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
         .logo img {
             width: 80px;
             border: 5px solid #FFC312;
             border-radius: 20px;
+            margin-right: 10px;
         }
         .logout {
-            background-color: teal;
-            color: white;
+            background-color: #FFC312;
+            color: teal;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
@@ -48,13 +54,16 @@
             padding: 20px;
             margin: 10px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px teal;
+            box-shadow: 0 4px 8px #333;
             text-align: left;
             width: 90%;
             max-width: 600px;
         }
         .account-info h2 {
             margin-top: 0;
+            font-size: 20px;
+            color: #FFC312;
+            cursor: pointer;
         }
         .account-info p {
             margin: 5px 0;
@@ -62,14 +71,11 @@
         .account-info i {
             color: #FFC312;
         }
-        h1 {
-            margin: 20px 0;
-            font-size: 28px;
-            color: white;
-        }
         .container {
             text-align: center;
             width: 90%;
+            max-width: 1200px;
+            margin-top: 20px;
         }
         .grid {
             display: grid;
@@ -80,11 +86,15 @@
         .card {
             background-color: teal;
             color: white;
-            padding: 1px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.2s;
             height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         .card:hover {
             transform: scale(1.05);
@@ -128,17 +138,16 @@
             </div>
             <div class="card">
                 <div class="card-icon"><i class="fas fa-book-open"></i></div>
-                <div><a href="{{ route('accounts') }}">Grand Livre</a></div>
+                <div><a href="{{ route('entries.index') }}">Grand Livre</a></div>
             </div>
             <div class="card">
-                <div class="card-icon"><i class="fas fa-file-alt"></i></div>
-                <div><a href="{{ route('compte-resultat.index') }}">Compte de Résultat</a></div>
+                <div class="card-icon"><i class="fas fa-balance-scale"></i></div>
+                <div><a href="{{ route('balances.index') }}">Balance</a></div>
             </div>
             <div class="card">
                 <div class="card-icon"><i class="fas fa-file"></i></div>
-                <div><a href="{{ route('rapports.index') }}">Rapports</a></div>
+                <div><a href="{{ route('reports.index') }}">Rapports</a></div>
             </div>
-            
         </div>
     </div>
 </body>

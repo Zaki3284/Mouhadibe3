@@ -31,13 +31,64 @@
             <button onclick="exportTablesToPDF()" class="btn btn-danger"><i class="fas fa-file-pdf"></i> PDF</button>
         </div>
     </div>
+    
+    <div class="form-group">
+        <label for="codeJournal">Afficher par Code Journal:</label>
+        <select id="codeJournal" class="form-control" onchange="filterTableByCodeJournal()">
+            <option value="all">Tous</option>
+            @foreach($balances as $codeJournal => $balanceGroup)
+                <option value="{{ $codeJournal }}">{{ $codeJournal }}</option>
+            @endforeach
+        </select>
+    </div>
+
+    <!-- Table for All Accounts -->
+    <table id="balance-table-all" class="balance-table">
+        <caption>BALANCE GÉNÉRALE au {{ \Carbon\Carbon::parse($month)->endOfMonth()->format('d/m/Y') }}</caption>
+        <thead>
+            <tr>
+                <th rowspan="2">Numéro de Compte</th>
+                <th rowspan="2">Nom du Compte</th>
+                <th colspan="2">Mouvements</th>
+                <th colspan="2">Soldes</th>
+            </tr>
+            <tr>
+                <th>Débit</th>
+                <th>Crédit</th>
+                <th>Débit</th>
+                <th>Crédit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($balances->flatten() as $balance)
+                <tr>
+                    <td>{{ $balance->account }}</td>
+                    <td>{{ $balance->compte->nom ?? '' }}</td>
+                    <td>{{ number_format($balance->movement_debit, 2) }}</td>
+                    <td>{{ number_format($balance->movement_credit, 2) }}</td>
+                    <td>{{ number_format($balance->balance_debit, 2) }}</td>
+                    <td>{{ number_format($balance->balance_credit, 2) }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2">Total Balance</td>
+                <td>{{ number_format($balances->flatten()->sum('movement_debit'), 2) }}</td>
+                <td>{{ number_format($balances->flatten()->sum('movement_credit'), 2) }}</td>
+                <td>{{ number_format($balances->flatten()->sum('balance_debit'), 2) }}</td>
+                <td>{{ number_format($balances->flatten()->sum('balance_credit'), 2) }}</td>
+            </tr>
+        </tfoot>
+    </table>
 
     @foreach($balances as $codeJournal => $balanceGroup)
-        <table id="balance-table-{{ $codeJournal }}" class="balance-table">
+        <table id="balance-table-{{ $codeJournal }}" class="balance-table d-none">
             <caption>BALANCE GÉNÉRALE ({{ $codeJournal }}) au {{ \Carbon\Carbon::parse($month)->endOfMonth()->format('d/m/Y') }}</caption>
             <thead>
                 <tr>
-                    <th rowspan="2">Comptes</th>
+                    <th rowspan="2">Numéro de Compte</th>
+                    <th rowspan="2">Nom du Compte</th>
                     <th colspan="2">Mouvements</th>
                     <th colspan="2">Soldes</th>
                 </tr>
@@ -51,63 +102,63 @@
             <tbody>
                 @foreach($balanceGroup as $balance)
                     <tr>
-                        <td>{{ $balance->account }} {{ $balance->description }}</td>
-                        <td>{{ $balance->movement_debit }}</td>
-                        <td>{{ $balance->movement_credit }}</td>
-                        <td>{{ $balance->balance_debit }}</td>
-                        <td>{{ $balance->balance_credit }}</td>
+                        <td>{{ $balance->account }}</td>
+                        <td>{{ $balance->compte->nom ?? '' }}</td>
+                        <td>{{ number_format($balance->movement_debit, 2) }}</td>
+                        <td>{{ number_format($balance->movement_credit, 2) }}</td>
+                        <td>{{ number_format($balance->balance_debit, 2) }}</td>
+                        <td>{{ number_format($balance->balance_credit, 2) }}</td>
                     </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <td>Total Balance</td>
-                    <td>{{ $balanceGroup->sum('movement_debit') }}</td>
-                    <td>{{ $balanceGroup->sum('movement_credit') }}</td>
-                    <td>{{ $balanceGroup->sum('balance_debit') }}</td>
-                    <td>{{ $balanceGroup->sum('balance_credit') }}</td>
+                    <td colspan="2">Total Balance</td>
+                    <td>{{ number_format($balanceGroup->sum('movement_debit'), 2) }}</td>
+                    <td>{{ number_format($balanceGroup->sum('movement_credit'), 2) }}</td>
+                    <td>{{ number_format($balanceGroup->sum('balance_debit'), 2) }}</td>
+                    <td>{{ number_format($balanceGroup->sum('balance_credit'), 2) }}</td>
                 </tr>
             </tfoot>
         </table>
     @endforeach
 
+    <a href="{{ route('comptable.dashboard') }}" class="back-button"><i class="fas fa-home"></i> Retour à la page comptable dashboard</a>
     <script>
-        function exportTablesToExcel() {
-            const tables = document.querySelectorAll('.balance-table');
-            const wb = XLSX.utils.book_new();
+        function filterTableByCodeJournal() {
+            const selectedCodeJournal = document.getElementById('codeJournal').value;
+            const allTables = document.querySelectorAll('.balance-table');
+            allTables.forEach(table => table.classList.add('d-none'));
 
-            tables.forEach((table, index) => {
-                const ws = XLSX.utils.table_to_sheet(table);
-                XLSX.utils.book_append_sheet(wb, ws, "Sheet" + (index + 1));
-            });
-
-            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-            const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
-
-            function s2ab(s) {
-                var buf = new ArrayBuffer(s.length);
-                var view = new Uint8Array(buf);
-                for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
-                return buf;
+            if (selectedCodeJournal === 'all') {
+                document.getElementById('balance-table-all').classList.remove('d-none');
+            } else {
+                document.getElementById(`balance-table-${selectedCodeJournal}`).classList.remove('d-none');
             }
+        }
 
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = 'balance_generale.xlsx';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+        function exportTablesToExcel() {
+            const tables = document.querySelectorAll('table');
+            tables.forEach((table, index) => {
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.table_to_sheet(table);
+                XLSX.utils.book_append_sheet(wb, ws, `Balance ${index}`);
+                XLSX.writeFile(wb, `balance_generale_${index}.xlsx`);
+            });
         }
 
         function exportTablesToPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            const tables = document.querySelectorAll('table');
 
-            const tables = document.querySelectorAll('.balance-table');
             tables.forEach((table, index) => {
-                doc.autoTable({ html: table, startY: doc.autoTable.previous.finalY + 10 || 20 });
+                const title = table.querySelector('caption').textContent.trim(); // Get the caption text as title
+                doc.text(title, 10, 10);
+                doc.autoTable({ html: table });
+                if (index < tables.length - 1) {
+                    doc.addPage();
+                }
             });
 
             doc.save('balance_generale.pdf');
@@ -118,7 +169,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            color: teal
+            color: teal;
         }
 
         .header {
@@ -200,7 +251,43 @@
         table tbody tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            color: #FFC312;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .back-button:hover {
+            text-decoration: underline;
+            color: teal;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-group label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .form-group select {
+            width: 200px;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .d-none {
+            display: none;
+        }
     </style>
 </body>
 </html>

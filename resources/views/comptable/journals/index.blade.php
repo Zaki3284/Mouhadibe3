@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Your custom styles -->
     <style> 
-        body {
+               body {
             font-family: Arial, sans-serif;
             padding: 20px;
             background-color: teal;
@@ -39,16 +39,28 @@
             margin-bottom: 20px;
         }
         .modal-dialog {
-        width: 900px;
-        background-color: teal;
-        color: teal
+            width: 900px;
+            background-color: teal;
+            color: teal;
         }
         h1 {
-  text-align: center;
-  font-size: 2rem;
-  margin-top: 20px;
-  
-}
+            text-align: center;
+            font-size: 2rem;
+            margin-top: 20px;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            color:#FFC312;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .back-button:hover {
+            text-decoration: underline;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -190,7 +202,7 @@
             </div>
         </div>
     </div>
-
+    <a href="{{ route('comptable.dashboard') }}" class="back-button"><i class="fas fa-home"></i> Retour à la page comptable dashboard</a>
     <!-- Error Modal -->
     <div id="errorModal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -240,6 +252,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
     
     <script>
+        // Setup CSRF token for AJAX requests
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': getCsrfToken()
+    }
+});
+
 
 function filterTable() {
             const searchCodeJournal = $('#searchCodeJournal').val().toLowerCase();
@@ -349,6 +368,7 @@ function saveJournalEntry() {
 }
 
 // Function to edit a journal entry
+// Function to edit a journal entry
 function editJournalEntry(id) {
     $.get('/journals/' + id, function(response) {
         $('#journal_id').val(response.id);
@@ -360,8 +380,13 @@ function editJournalEntry(id) {
         $('#Code_Journal').val(response.Code_Journal);
         $('#formModalTitle').text('Modifier une entrée');
         $('#journalFormModal').modal('show');
+    }).fail(function(xhr, status, error) {
+        var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'Erreur lors de la récupération des données';
+        $('#errorModal .modal-body p').text(errorMessage);
+        $('#errorModal').modal('show');
     });
 }
+
 
 // Function to show the confirmation modal and set the delete button's onclick handler
 function confirmDeleteJournalEntry(id) {
@@ -458,5 +483,3 @@ function clearFormFields() {
     </script>
 </body>
 </html>
-
-

@@ -70,5 +70,8 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'superadmin' => \App\Http\Middleware\SuperAdminMiddleware::class,
         'comptable' => \App\Http\Middleware\ComptableMiddleware::class,
+
+        // https
+        \App\Http\Middleware\ForceHttps::class,
     ];
 }

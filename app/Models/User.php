@@ -6,53 +6,45 @@ use App\Notifications\CustomVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'username',  'email', 'password', 'phone_number', 'confirmation_token', 'role',
+        'username', 'email', 'password', 'phone_number', 'confirmation_token', 'role',
     ];
 
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', 'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-    // Overriding the notification method for email verification
+    // Override the notification method for email verification
     public function sendEmailVerificationNotification()
     {
         $this->notify(new CustomVerifyEmail);
     }
 
+    // Define the relationship with the Company model (assuming this relationship exists)
     public function company()
     {
         return $this->hasOne(Company::class, 'admin_user_id');
     }
 
-    public function showComptableInformation($userId)
+    // Define the relationship to show comptable information (assuming this relationship exists)
+    public function comptableInformation()
     {
         return $this->hasOne(Company::class, 'comptable_user_id');
+    }
+
+    // Define the relationship with the Order model
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

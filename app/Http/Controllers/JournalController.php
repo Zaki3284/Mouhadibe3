@@ -80,7 +80,17 @@ class JournalController extends Controller
         }
     }
 
-
+    /**
+     * Display the specified journal entry.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $journal = Journal::findOrFail($id); // Assuming Journal is your model name
+        return response()->json($journal);
+    }
     /**
      * Update the specified journal entry.
      *
@@ -88,25 +98,27 @@ class JournalController extends Controller
      * @param  \App\Models\Journal  $journal
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Journal $journal)
+    public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
             'Date' => 'required|date',
-            'Numero_de_Compte' => 'required|string|exists:comptes,numero_compte', // Ensure account exists
+            'Numero_de_Compte' => 'required|string|exists:comptes,numero_compte',
             'Libelle' => 'required|string',
             'Montant_Debit' => 'nullable|numeric',
             'Montant_Credit' => 'nullable|numeric',
             'Code_Journal' => 'required|string',
         ]);
 
-        // Begin transaction
         DB::beginTransaction();
 
         try {
-            // Update the journal entry
+            $journal = Journal::findOrFail($id);
+
+            // Get the original values
             $oldDebit = $journal->Montant_Debit ?? 0;
             $oldCredit = $journal->Montant_Credit ?? 0;
 
+            // Update the journal entry
             $journal->update($validatedData);
 
             // Find and update the associated entry in 'entries' table
@@ -125,10 +137,10 @@ class JournalController extends Controller
                 ]);
             }
 
-            // Update balance entry (increment/decrement based on changes)
+            // Update balance entry
             $balance = Balance::where('account', $journal->Numero_de_Compte)
                 ->where('code_journal', $journal->Code_Journal)
-                ->where('Date', $journal->Date)
+                ->where('date', $journal->Date)
                 ->first();
 
             if ($balance) {
@@ -139,12 +151,10 @@ class JournalController extends Controller
                 $balance->save();
             }
 
-            // Commit transaction
             DB::commit();
 
             return response()->json($journal, 200);
         } catch (\Exception $e) {
-            // Rollback transaction on error
             DB::rollback();
             Log::error('Error updating journal entry: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to update journal entry.'], 500);
@@ -163,11 +173,9 @@ class JournalController extends Controller
         DB::beginTransaction();
 
         try {
-            // Delete the entry from 'entries' table associated with the journal
+            // Find the associated entry in 'entries' table
             $entry = Entry::where('account', $journal->Numero_de_Compte)
                 ->where('description', $journal->Libelle)
-                ->where('debit', $journal->Montant_Debit)
-                ->where('credit', $journal->Montant_Credit)
                 ->where('date', $journal->Date)
                 ->first();
 
@@ -175,10 +183,10 @@ class JournalController extends Controller
                 $entry->delete();
             }
 
-            // Update balance entry (decrement based on deleted entry)
+            // Update or delete the associated balance entry
             $balance = Balance::where('account', $journal->Numero_de_Compte)
                 ->where('code_journal', $journal->Code_Journal)
-                ->where('Date', $journal->Date)
+                ->where('date', $journal->Date)
                 ->first();
 
             if ($balance) {
@@ -186,11 +194,12 @@ class JournalController extends Controller
                 $balance->movement_credit -= $journal->Montant_Credit ?? 0;
                 $balance->balance_debit -= $journal->Montant_Debit ?? 0;
                 $balance->balance_credit -= $journal->Montant_Credit ?? 0;
-                $balance->save();
 
-                // Delete balance entry if both debit and credit are zero after decrement
+                // If the balance becomes zero, delete the balance entry
                 if ($balance->movement_debit == 0 && $balance->movement_credit == 0) {
                     $balance->delete();
+                } else {
+                    $balance->save();
                 }
             }
 
@@ -200,7 +209,7 @@ class JournalController extends Controller
             // Commit transaction
             DB::commit();
 
-            return response()->json(null, 204);
+            return response()->json(['message' => 'Journal entry deleted successfully.'], 200);
         } catch (\Exception $e) {
             // Rollback transaction on error
             DB::rollback();

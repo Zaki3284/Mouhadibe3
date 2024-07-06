@@ -22,5 +22,8 @@ class Product extends Model
         return $this->belongsTo(User::class, 'fournisseur_user_id');
     }
 
-    // Define other relationships and methods as needed
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

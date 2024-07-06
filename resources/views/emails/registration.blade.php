@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تأكيد البريد الإلكتروني</title>
 </head>
-<body>
+<body dir="rtl">
     <p>مرحبًا {{ $details['username'] }},</p>
 
     @if (isset($details['confirmation_url']))
@@ -20,6 +18,6 @@
     @endif
 
     <p>إذا لم تكن طلبت ذلك، يمكنك تجاهل هذه الرسالة بأمان.</p>
-    <p>مع التحية،<br> فريق التطبيق الخاص بك</p>
+    <p>مع التحية،<br> فريق تطبيق  المحاسب</p>
 </body>
 </html>

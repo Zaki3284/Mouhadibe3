@@ -30,9 +30,9 @@
         .main-cards, .charts, .user-management, .role-management, .system-settings, .fournisseur-section {
             margin-bottom: 20px;
         }
-        .table th, .table td {
-            vertical-align: middle;
-        }
+       td{
+        color:#FFC312;
+       }
     </style>
 </head>
 <body class="home">
@@ -48,8 +48,10 @@
                 <ul>
                     <li class="active"><a href="#dashboard" class="menu-link"><i class="fa fa-home" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Tableau de Bord</span></a></li>
                     <li><a href="#reports" class="menu-link"><i class="fa fa-file-alt" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Rapports</span></a></li>
-                    <li><a href="#fournisseur" class="menu-link"><i class="fa fa-comments" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Salle Fournisseur</span></a></li>
+                    <li><a href="#fournisseur" class="menu-link"><i class="fa fa-comments" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Envoyer message au Fournisseur</span></a></li>
+                    <li><a href="#orders" class="menu-link"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Commandes</span></a></li>
                     <li><a href="#system-settings" class="menu-link"><i class="fa fa-cogs" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Paramètres du Système</span></a></li>
+                    
                 </ul>
             </div>
         </div>
@@ -125,7 +127,7 @@
                                 <p class="text-primary">TOTAL RAPPORTS</p>
                                 <span class="material-icons-outlined text-blue">description</span>
                             </div>
-                            <span class="text-primary font-weight-bold">1200</span>
+                            <span class="text-primary font-weight-bold">{{$totalReports}}</span>
                         </div>
                         <div class="card">
                             <div class="card-inner">
@@ -139,65 +141,160 @@
                                 <p class="text-primary">RAPPORTS DÉJÀ LUS</p>
                                 <span class="material-icons-outlined text-green">done_all</span>
                             </div>
-                            <span class="text-primary font-weight-bold">30</span>
+                            <span class="text-primary font-weight-bold">{{$readReports}}</span>
                         </div>
                         <div class="card">
                             <div class="card-inner">
                                 <p class="text-primary">ALERTES SYSTÈME</p>
                                 <span class="material-icons-outlined text-red">notification_important</span>
                             </div>
-                            <span class="text-primary font-weight-bold">8</span>
+                            <span class="text-primary font-weight-bold">{{$totalProblems}}</span>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Reports Section -->
-                <div id="reports" class="section">
-                    <h2>Rapports</h2>
-                    <table class="report-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Heure</th>
-                                <th>Nom du Comptable</th>
-                                <th>Charge Totale</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Add more rows as needed -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- Fournisseur Section -->
-                <div id="fournisseur" class="section">
-                    <h2>Salle Fournisseur</h2>
-                    <!-- Input fields for message content, product name, quantity, and price -->
-                    <div id="messageForm">
-                        <div class="inputWithIcon">
-                            <i class="fas fa-shopping-cart"></i>
-                            <select id="productNameSelect">
-                                <option value="">Sélectionner un produit</option>
-                                <option value="product1">Produit 1</option>
-                                <option value="product2">Produit 2</option>
-                                <!-- Add more options as needed -->
-                            </select>
-                        </div>
-                        <div class="inputWithIcon">
-                            <i class="fas fa-boxes"></i>
-                            <input type="number" id="quantityInput" placeholder="Quantité">
-                        </div>
-                        <div class="inputWithIcon">
-                            <i class="fas fa-comment"></i>
-                            <input type="text" id="messageInput" placeholder="Tapez votre message ici...">
-                        </div>
-                        <button id="sendMessageButton"><i class="fas fa-paper-plane"></i> Envoyer le message</button>
+
+<!-- Reports Section -->
+<div id="reports" class="section admin-reports-page">
+    <h2>Rapports</h2>
+    @isset($adminReports)
+    <table class="report-table table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Commentaires</th>
+                <th>RAPPORTS ETAT</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($adminReports as $adminReport)
+            <tr>
+                <td>{{ $adminReport->date }}</td>
+                <td>{{ $adminReport->comments }}</td>
+                <td>{{ $adminReport->read_by_admin ? 'Oui' : 'Non' }}</td>
+                <td>
+                    <div class="btn-group">
+                        <!-- Mark as read button -->
+                        <form action="{{ route('admin_reports.markAsRead', $adminReport->id) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class=" btn-action {{ $adminReport->read_by_admin ? 'btn-success' : 'btn-danger' }}">
+                                <i class="fas fa-check"></i>
+                                {{ $adminReport->read_by_admin ? 'RAPPORT DÉJÀ LUS' : 'Marquer comme lu' }}
+                            </button>
+                        </form>
+                        <!-- Export to PDF button -->
+                        <a href="{{ route('admin_reports.export', $adminReport->id) }}" class="btn-action btn-info">
+                            <i class="fas fa-file-pdf"></i> Exporter en PDF
+                        </a>
                     </div>
-                </div>
-                
-                <!-- System Settings Section -->
-                <!-- System Settings Section -->
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    @else
+    <p>No admin reports found.</p>
+    @endisset
+</div>
+              
+<!-- End Reports Section -->
+
+<!-- Fournisseur Section -->
+<div id="fournisseur" class="section">
+    <h2>Salle Fournisseur</h2>
+    <div id="messageForm">
+        <div class="inputWithIcon">
+            <i class="fas fa-shopping-cart"></i>
+            <select id="productNameSelect">
+                <option value="">Sélectionner type de produit</option>
+                @foreach($products as $product)
+                <option value="{{ $product->id }}">{{ $product->product_name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="inputWithIcon">
+            <i class="fas fa-boxes"></i>
+            <input type="number" id="quantityInput" placeholder="Quantité">
+        </div>
+        <div class="inputWithIcon">
+            <i class="fas fa-comment"></i>
+            <input type="text" id="messageInput" placeholder="Tapez votre message ici...">
+        </div>
+        <button id="sendMessageButton"><i class="fas fa-paper-plane"></i> Envoyer le message</button>
+    </div>
+</div>
+<!-- End Fournisseur Section -->
+
+
+<!-- commandes Section -->
+<div id="orders" class="section">
+    <h2>Liste des Commandes</h2>
+    <div id="ordersList">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Produit ID</th>
+                    <th scope="col">Produit Nom</th>
+                    <th scope="col">Quantité</th>
+                    <th scope="col">Message</th>
+                    <th scope="col">Statut</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($orders as $order)
+                    <tr>
+                        <td>{{ $order->product ? $order->product->id : 'Produit non trouvé' }}</td>
+                        <td>{{ $order->product ? $order->product->product_name : 'Produit non trouvé' }}</td>
+                        <td>{{ $order->quantity }}</td>
+                        <td>{{ $order->message }}</td>
+                        <td>
+                            @if ($order->status == 'no')
+                                En attente
+                            @else
+                                Complété
+                            @endif
+                        </td>
+                        <td>
+                            @if ($order->status == 'no')
+                                <form action="{{ route('orders.complete', ['id' => $order->id]) }}" method="POST" style="display: inline-block;">
+                                    @csrf
+                                    @method('POST')
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-check"></i> Marquer comme Complété
+                                    </button>
+                                </form>
+                            @else
+                                <button type="button" class="btn btn-success" disabled>
+                                    <i class="fas fa-check"></i> Complété
+                                </button>
+                            @endif
+                            
+                            <form action="{{ route('orders.delete', ['id' => $order->id]) }}" method="POST" style="display: inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette commande ?');">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- End commandes Section -->
+
+
+
+
+
+ <!-- System Settings Section -->
 <div id="system-settings" class="section">
     <h2>Paramètres du Système</h2>
     <div class="settings-content">
@@ -205,6 +302,12 @@
             <a href="{{ route('comptes.index') }}" data-toggle="modal">
                 <i class="fas fa-plus-circle fa-5x setting-icon"></i>
                 <p>Ajouter un Compte au Plan Comptable</p>
+            </a>
+        </div>
+        <div class="setting-option">
+            <a href="{{route ('bilan.index')}}">
+                <i class="fas fa-chart-line fa-5x setting-icon"></i>
+                <p> Bilan</p>
             </a>
         </div>
         <div class="setting-option">
@@ -223,6 +326,7 @@
         
     </div>
 </div>
+<!-- End System Settings Section -->
 
 
 <!-- Add Comptable Modal -->
@@ -327,20 +431,21 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="reportProblemForm">
+                <form id="reportProblemForm" method="POST" action="{{ route('problems.store') }}">
+                    @csrf
                     <div class="form-group">
                         <label for="problemDescription">Description</label>
-                        <textarea class="form-control" id="problemDescription" placeholder="Décrire le problème"></textarea>
+                        <textarea class="form-control" id="problemDescription" name="description" placeholder="Décrire le problème"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="problemPriority">Priorité</label>
-                        <select class="form-control" id="problemPriority">
+                        <select class="form-control" id="problemPriority" name="priority">
                             <option value="low">Basse</option>
                             <option value="medium">Moyenne</option>
                             <option value="high">Haute</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn">Envoyer le Rapport</button>
+                    <button type="submit" class="btn btn-primary">Envoyer le Rapport</button>
                 </form>
             </div>
         </div>
@@ -365,5 +470,109 @@ $(document).ready(function(){
     });
 });
 </script>
+
+{{-- order js --}}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Fetch products and populate the select dropdown
+    $.ajax({
+        url: '{{ route("products.index") }}',
+        method: 'GET',
+        success: function(data) {
+            var productSelect = $('#productNameSelect');
+            data.forEach(function(product) {
+                productSelect.append(new Option(product.product_name, product.id));
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching products:', status, error);
+        }
+    });
+
+    // Handle form submission
+    $('#sendMessageButton').on('click', function(e) {
+        e.preventDefault();
+
+        var product_id = $('#productNameSelect').val();
+        var quantity = $('#quantityInput').val();
+        var message = $('#messageInput').val();
+
+        $.ajax({
+            url: '{{ route("orders.create") }}',
+            method: 'POST',
+            data: {
+                product_id: product_id,
+                quantity: quantity,
+                message: message,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert('Commande créée avec succès!');
+                    // Optionally, clear the form fields or update the orders list dynamically
+                    $('#productNameSelect').val('');
+                    $('#quantityInput').val('');
+                    $('#messageInput').val('');
+                } else {
+                    alert('Erreur lors de la création de la commande.');
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('Erreur lors de la requête AJAX : ' + status + ' - ' + error);
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>
+<style>
+    /* General styles for the admin reports page */
+    .admin-reports-page table {
+        width: 90%;
+        border-collapse: collapse;
+        margin-top:30px;
+        margin-left: 40px;
+    }
+    
+    .admin-reports-page th, .admin-reports-page td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+    
+    .admin-reports-page th {
+        background-color: #f2f2f2;
+    }
+    
+    .admin-reports-page td {
+        background-color: #ffffff;
+    }
+    
+    .admin-reports-page tfoot {
+        font-weight: bold;
+    }
+    
+    .admin-reports-page .btn-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 5px;
+    }
+    
+    .admin-reports-page .btn-action {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 160px; /* Set a fixed width */
+        height: 40px; /* Set a fixed height */
+        gap: 0px; /* Space between icon and text */
+        font-size: 14px;
+        padding: 0;
+        margin: 0;
+    }
+    
+   
+    
+    </style>
+    

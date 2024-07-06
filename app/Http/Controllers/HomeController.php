@@ -2,9 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ContactMessage;
+use App\Models\Problem;
+
+
+
+use App\Models\Product;
+use App\Models\Order;
+
 use Illuminate\Support\Facades\Auth;
-
-
+use App\Models\AdminReport;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -33,11 +41,27 @@ class HomeController extends Controller
             // Check the user's role
             switch (Auth::user()->role) {
                 case 'admin':
-                    return redirect()->route('admin.dashboard');
+                    $adminReports = AdminReport::all();
+                    $products = Product::all();
+                    $orders = Order::all();
+                    $totalReports = AdminReport::count(); // Example: Count of all admin reports
+                    $completionRate = 75; // Example: Completion rate in percentage
+                    $readReports = AdminReport::where('read_by_admin', true)->count();
+                    $totalProblems = Problem::count();
+
+                    return view('admin.dashboard', compact('adminReports', 'products', 'orders', 'totalReports', 'readReports', 'totalProblems'));
+
                 case 'comptable':
                     return redirect()->route('comptable.dashboard');
                 case 'superadmin':
-                    return redirect()->route('superadmin.dashboard');
+                    // Retrieve all users from the database
+                    $totalUsers = User::count();
+                    $totalProblems = Problem::count();
+                    $users = User::all();
+                    $contactMessages = ContactMessage::all();
+                    $problems = Problem::all();
+                    return view('superadmin.dashboard', compact('users', 'contactMessages', 'problems', 'totalUsers', 'totalProblems'));
+
                 default:
                     // For users with other roles, show the home view
                     return view('home');
@@ -47,6 +71,7 @@ class HomeController extends Controller
             return redirect()->route('login');
         }
     }
+
 
     public function adminDashboard()
     {
@@ -59,6 +84,9 @@ class HomeController extends Controller
 
     public function superAdminDashboard()
     {
-        return view('superadmin.dashboard');
+        $users = User::all();
+        $contactMessages = ContactMessage::all();
+        $problems = Problem::all();
+        return view('superadmin.dashboard', compact('users', 'contactMessages', 'problems'));
     }
 }

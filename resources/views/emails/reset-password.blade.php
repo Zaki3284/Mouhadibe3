@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Reset Password</title>
+    <title>إعادة تعيين كلمة المرور</title>
 </head>
-<body>
-    <h1>Reset Password</h1>
-    <p>Click the following link to reset your password:</p>
+<body dir="rtl">
+    <h1>إعادة تعيين كلمة المرور</h1>
+    <p>انقر على الرابط التالي لإعادة تعيين كلمة المرور الخاصة بك:</p>
     <a href="{{ $url }}">{{ $url }}</a>
+    <p>
+        بأطيب التحيات،<br>
+        فريق التطبيق المحاسب
+    </p>
 </body>
 </html>

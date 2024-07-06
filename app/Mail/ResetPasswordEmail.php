@@ -30,7 +30,7 @@ class ResetPasswordEmail extends Mailable
     public function build()
     {
         return $this->subject('Reset Password Notification')
-            ->view('vendor.mail.html.reset-password')
+            ->view('emails.reset-password') // Blade template for the email body
             ->with(['url' => $this->url]);
     }
 }

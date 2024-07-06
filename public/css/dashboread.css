@@ -95,7 +95,7 @@ a:focus,a:hover,a{
   .add-project::before {
   background: rgba(0, 0, 0, 0) url("../images/plus.png") no-repeat scroll 0 0;
   content: "";
-  ;
+  
   height: 12px;
   left: 17px;
   position: absolute;
@@ -834,7 +834,7 @@ a:focus,a:hover,a{
   }
   
   /* journal table  css*/
-  body {
+  /* body {
     font-family: Arial, sans-serif;
     background-color: teal;
   }
@@ -862,7 +862,7 @@ a:focus,a:hover,a{
     margin-top: 20px;
     color:white;
     font-size: large;
-  }
+  } */
   
   button {
     margin-top: 10px;
@@ -994,7 +994,7 @@ a:focus,a:hover,a{
   
     /*  CSS compte resultat Styles */
   
-  #financial-table {
+  /* #financial-table {
       width: 100%;
       border-collapse: collapse;
       background-color:#f2f2f2 ;
@@ -1014,6 +1014,7 @@ a:focus,a:hover,a{
       font-weight: bold;
       background-color: #f2f2f2;
   }
-  
+   */
     /* End CSS compte resultat Styles */
-  
+
+    
